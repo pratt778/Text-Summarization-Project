@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Sign Up | Text Summarizer{% endblock title %}
+{% block title %}Sign In | Text Summarizer{% endblock title %}
 {% block content %}
 <main class="p-3">
 
     <form method="post">
         {% csrf_token %}
-        {{form.as_p }}
-        <button type='submit' class="btn btn-success">Sign Up</button>
+        {{form.as_p}}
+        <button type='submit' class="btn btn-danger">Sign In</button>
     </form>
 </main>
 
