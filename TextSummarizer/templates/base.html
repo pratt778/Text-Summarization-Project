@@ -20,7 +20,7 @@
         <img
           src=""
           height="16"
-          alt="Summarizer logo"
+          alt="Summarizer_logo"
           loading="lazy"
           style="margin-top: -1px;"
         />
@@ -44,27 +44,36 @@
         <!-- Left links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#">Text Summarizer</a>
+            <a class="nav-link" href="{% url "home" %}">Text Summarizer</a>
           </li>
         </ul>
         
-  
-        <div class="d-flex align-items-center">
-            <a href="">
-                <button data-mdb-ripple-init type="button" class="btn me-3">
-                    User History
-                  </button>
-             </a>
-             <a href="{% url "signin" %}">
-                <button data-mdb-ripple-init type="button" class="btn me-3">
-                    Sign In
-                  </button>
-             </a>
-             <a href="{% url "signup" %}">
-          <button data-mdb-ripple-init type="button" class="btn btn-success me-3">
-            Sign up 
+      {% if user.is_authenticated %}
+      <div class="d-flex align-items-center">
+        <a href="">
+          <button data-mdb-ripple-init type="button" class="btn me-3">
+            User History
           </button>
         </a>
+        <a href="{% url "signout" %}">
+          <button data-mdb-ripple-init type="button" class="btn btn-danger me-3">
+            Sign Out
+          </button>
+      </a>
+      {% else %}
+      <a href="{% url "signin" %}">
+        <button data-mdb-ripple-init type="button" class="btn me-3">
+            Sign In
+          </button>
+     </a>
+     <a href="{% url "signup" %}">
+      <button data-mdb-ripple-init type="button" class="btn btn-success me-3">
+        Sign Up 
+      </button>
+    </a>
+
+        {% endif %}
+            
         
         </div>
       </div>
