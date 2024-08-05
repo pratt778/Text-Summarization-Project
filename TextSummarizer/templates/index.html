@@ -25,6 +25,20 @@
         <div class="m-3 w-100 d-flex justify-content-center">
             <button class="btn btn-success" type="submit">Summarize</button>
         </div>
+       
     </form>
+    {% if keywords %}
+    <h2>Keywords:</h2>
+    <ul>
+        {% for keyword in keywords %}
+            <li>{{ keyword }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if rouge_scores %}
+    <h2>ROUGE Scores:</h2>
+    <pre>{{ rouge_scores }}</pre>
+{% endif %}
 </main>
 {% endblock content %}

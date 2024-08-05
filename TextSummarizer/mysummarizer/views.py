@@ -3,19 +3,37 @@ from django.views.generic import FormView,View
 from .forms import UserForm,UserLogin
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
-from .summarize import generate_summary
+from rouge import Rouge
+from .summarize import AdvancedTextRankSummarizer
 # Create your views here.
 
 
 
-def home(request):
-    if request.method=="POST":
-        summary_test = request.POST.get('summary')
-        summary = generate_summary(summary_test)
-        print(summary)
-        return render(request,'index.html',{'summary':summary})
-    return render(request,'index.html')
+# Initialize the summarizer once
+summarizer = AdvancedTextRankSummarizer()
 
+def home(request):
+    if request.method == "POST":
+        summary_test = request.POST.get('summary')
+        reference_summary = request.POST.get('reference_summary')  # Assuming you have a field for reference summary
+        if summary_test:
+            try:
+                summary, keywords = summarizer.summarize(summary_test, num_sentences=5, num_keywords=5)
+                context = {'summary': summary, 'keywords': keywords}
+                
+                # Evaluate with ROUGE if reference summary is provided
+                if reference_summary:
+                    rouge = Rouge()
+                    scores = rouge.get_scores(summary, reference_summary)
+                    context['rouge_scores'] = scores
+            except Exception as e:
+                context = {'error': str(e)}
+        else:
+            context = {'error': 'No text provided for summarization.'}
+        
+        return render(request, 'index.html', context)
+    
+    return render(request, 'index.html')
 
 def Signup(request):
     if request.method=='POST':
