@@ -2,10 +2,14 @@ import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from collections import defaultdict
+import math
 
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
 
 class AdvancedTextRankSummarizer:
     def __init__(self, language='english'):
@@ -16,46 +20,70 @@ class AdvancedTextRankSummarizer:
     def preprocess_text(self, text):
         sentences = sent_tokenize(text)
         cleaned_sentences = []
-        
         for sentence in sentences:
             words = word_tokenize(sentence.lower())
             pos_tags = nltk.pos_tag(words)
-            words = [self.lemmatizer.lemmatize(word) for word, pos in pos_tags 
+            words = [self.lemmatizer.lemmatize(word) for word, pos in pos_tags
                      if word.isalnum() and word not in self.stop_words and pos in {'NN', 'JJ', 'NNP'}]
             cleaned_sentences.append(words)
-        
         return sentences, cleaned_sentences
 
-    def calculate_similarity(self, sent1, sent2):
-        tfidf = TfidfVectorizer().fit_transform([' '.join(sent1), ' '.join(sent2)])
-        cosine_sim = (tfidf * tfidf.T).toarray()[0, 1]
+    def calculate_tf(self, sentence):
+        tf_dict = {}
+        for word in sentence:
+            tf_dict[word] = tf_dict.get(word, 0) + 1
+        for word, count in tf_dict.items():
+            tf_dict[word] = count / len(sentence)
+        return tf_dict
+
+    def calculate_idf(self, cleaned_sentences):
+        idf_dict = {}
+        num_docs = len(cleaned_sentences)
+        for sentence in cleaned_sentences:
+            for word in set(sentence):
+                idf_dict[word] = idf_dict.get(word, 0) + 1
+        for word, count in idf_dict.items():
+            idf_dict[word] = math.log(num_docs / count)
+        return idf_dict
+
+    def calculate_tfidf(self, sentence, idf_dict):
+        tf_dict = self.calculate_tf(sentence)
+        tfidf_dict = {word: tf * idf_dict[word] for word, tf in tf_dict.items()}
+        return tfidf_dict
+
+    def calculate_similarity(self, sent1, sent2, idf_dict):
+        tfidf1 = self.calculate_tfidf(sent1, idf_dict)
+        tfidf2 = self.calculate_tfidf(sent2, idf_dict)
+        
+        all_words = set(tfidf1.keys()).union(set(tfidf2.keys()))
+        
+        vec1 = np.array([tfidf1.get(word, 0) for word in all_words])
+        vec2 = np.array([tfidf2.get(word, 0) for word in all_words])
+        
+        cosine_sim = np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
         return cosine_sim
 
     def build_similarity_matrix(self, cleaned_sentences):
         n = len(cleaned_sentences)
         similarity_matrix = np.zeros((n, n))
-        
+        idf_dict = self.calculate_idf(cleaned_sentences)
         for i in range(n):
             for j in range(i + 1, n):
-                similarity = self.calculate_similarity(cleaned_sentences[i], cleaned_sentences[j])
+                similarity = self.calculate_similarity(cleaned_sentences[i], cleaned_sentences[j], idf_dict)
                 similarity_matrix[i][j] = similarity
                 similarity_matrix[j][i] = similarity
-        
         return similarity_matrix
 
     def textrank(self, similarity_matrix, eps=1e-8, max_iter=100, damping_factor=0.85):
         n = len(similarity_matrix)
         p = np.ones(n) / n
-        
         for _ in range(max_iter):
             prev_p = p.copy()
             for i in range(n):
                 summation = np.sum(similarity_matrix[i] * prev_p / (np.sum(similarity_matrix, axis=1) + eps))
                 p[i] = (1 - damping_factor) / n + damping_factor * summation
-            
             if np.sum(np.abs(p - prev_p)) < eps:
                 break
-        
         return p
 
     def extract_top_sentences(self, sentences, scores, num_sentences):
@@ -67,15 +95,39 @@ class AdvancedTextRankSummarizer:
         for i, sentence in enumerate(cleaned_sentences):
             for word in sentence:
                 word_scores[word] += scores[i]
-        
         return sorted(word_scores.items(), key=lambda x: x[1], reverse=True)[:num_keywords]
 
+    def generate_title(self, top_sentence, keywords, max_length=7):
+        # Tokenize the sentence
+        words = word_tokenize(top_sentence.lower())
+        
+        # Lemmatize and filter out stop words and non-alphanumeric words
+        important_words = [self.lemmatizer.lemmatize(word) for word in words 
+                           if word not in self.stop_words and word.isalnum()]
+        
+        # Combine important words with keywords
+        title_words = important_words + [word for word, _ in keywords if word not in important_words]
+        
+       
+        title_words = sorted(set(title_words), key=lambda x: words.index(x) if x in words else len(words))
+        
+       
+        title = ' '.join(title_words[:max_length])
+        
+        
+        title = title.title()
+        
+        return title
+
+    
     def summarize(self, text, num_sentences=3, num_keywords=5):
         original_sentences, cleaned_sentences = self.preprocess_text(text)
         similarity_matrix = self.build_similarity_matrix(cleaned_sentences)
         scores = self.textrank(similarity_matrix)
-        
         summary = self.extract_top_sentences(original_sentences, scores, num_sentences)
         keywords = self.keyword_extraction(cleaned_sentences, scores, num_keywords)
         
-        return ' '.join(summary), [word for word, _ in keywords]
+        top_sentence = summary[0] if summary else ""
+        title = self.generate_title(top_sentence, keywords)
+        
+        return title, ' '.join(summary), [word for word, _ in keywords]

@@ -12,15 +12,15 @@
 <body>
   
     <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-body-tertiary">
     <!-- Container wrapper -->
     <div class="container">
       <!-- Navbar brand -->
-      <a class="navbar-brand me-2" href="https://mdbgo.com/">
+      <a class="navbar-brand me-2" href="">
         <img
-          src=""
+          src="home/pratham778/Downloads/download.webp"
           height="16"
-          alt="Summarizer_logo"
+          alt="Summarize_logo"
           loading="lazy"
           style="margin-top: -1px;"
         />
@@ -44,15 +44,15 @@
         <!-- Left links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url "home" %}">Text Summarizer</a>
+            <a class="nav-link" href="{% url "home" %}">MeroTextSummarizer</a>
           </li>
         </ul>
         
       {% if user.is_authenticated %}
       <div class="d-flex align-items-center">
-        <a href="">
-          <button data-mdb-ripple-init type="button" class="btn me-3">
-            User History
+        <a href="{% url "userhistory" request.user.id %}">
+          <button data-mdb-ripple-init type="button" class="btn me-3 text-white">
+            {{request.user | capfirst}}'s history
           </button>
         </a>
         <a href="{% url "signout" %}">
@@ -62,7 +62,7 @@
       </a>
       {% else %}
       <a href="{% url "signin" %}">
-        <button data-mdb-ripple-init type="button" class="btn me-3">
+        <button data-mdb-ripple-init type="button" class="btn btn-primary me-3">
             Sign In
           </button>
      </a>

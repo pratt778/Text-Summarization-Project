@@ -2,20 +2,55 @@
 {% block title %}Home | Text Summarizer{% endblock title %}
 {% block content %}
 <main>
-    <h2 align="center">Summarize Text</h2>
+    <h2 align="center" class="fw-bold mt-3">Online Text Summarizing Tool</h2>
+    {% if message %}
+    <div class="alert alert-primary" role="alert">
+       {{message}}
+      </div>
+    {% endif %}
+    
+    
     <form method="post">
         {% csrf_token %}
         <div class="d-flex gap-2 justify-content-center mt-3 w-100 align-items-center">
             <div class="d-flex gap-2 justify-content-center shadow-lg rounded">
                 <div class="d-flex flex-column p-3">
                     <label for="texta">Enter Your Text</label>
-                    <textarea rows="12" style="resize: none;" class="border-0" cols="50" id="texta" name="summary" placeholder="Enter or Paste your text here"></textarea>
+                    <textarea rows="12" style="resize: none;" class="border-0" cols="53" id="texta" name="summary" placeholder="Enter or Paste your text here">{% if text %}{{text}}{% endif %}</textarea>
+                    {% if length %}
+                    <div class="d-flex w-100  align-items-center">
+                        <div class="fw-bold">
+                            {{length}} words
+                        </div>
+                    </div>
+                   
+                    {% endif %}
                 </div>
                 <div class="border mx-2"></div>
                 <div class="d-flex flex-column p-3">
                     <label for="textb">Generated Summary</label>
                     {% if summary %}
-                    <textarea rows="12" style="resize: none;" class="border-0" cols="50" id="textb" readonly>{{ summary }}</textarea>
+                    <textarea rows="12" style="resize: none;" class="border-0" cols="53" id="textb" readonly>{{ summary }}</textarea>
+                    {% if keywords %}
+                    <div class="d-flex w-100  align-items-center">
+                        <div class="">
+                            <span class="fw-bold">Keywords:</span> 
+                            {% for keyword in keywords %}
+                            {{ keyword }},
+                        {% endfor %}
+                            etc.
+                        </div>
+                    </div>
+                   
+                    {% endif %}
+                    {% if title %}
+                    <div class="d-flex">
+
+                        <span class="fw-bold">Title: </span>
+                        <span> {{ title }}</span>
+                    </div>
+                    </div>
+                    {% endif %}
                     {% else %}
                     <textarea rows="12" style="resize: none;" class="border-0" cols="50" id="textb" disabled></textarea>
                     {% endif %}
@@ -27,14 +62,11 @@
         </div>
        
     </form>
-    {% if keywords %}
-    <h2>Keywords:</h2>
-    <ul>
-        {% for keyword in keywords %}
-            <li>{{ keyword }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+   
+    
+
+
+
 
 {% if rouge_scores %}
     <h2>ROUGE Scores:</h2>
