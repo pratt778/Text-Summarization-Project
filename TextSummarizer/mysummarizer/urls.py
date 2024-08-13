@@ -10,4 +10,5 @@ urlpatterns = [
     path('userhistory/<int:id>',Userhistory,name='userhistory'),
     path('summarydetail/<int:pk>',summaryuser,name='summarydetail'),
     path('deletesummary/<int:pk>',deletesummary,name='deletesummary'),
+    path('search',search,name="searchquery"),
 ]

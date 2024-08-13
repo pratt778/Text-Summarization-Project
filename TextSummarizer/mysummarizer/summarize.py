@@ -120,7 +120,7 @@ class AdvancedTextRankSummarizer:
         return title
 
     
-    def summarize(self, text, num_sentences=3, num_keywords=5):
+    def summarize(self, text, num_sentences, num_keywords=5):
         original_sentences, cleaned_sentences = self.preprocess_text(text)
         similarity_matrix = self.build_similarity_matrix(cleaned_sentences)
         scores = self.textrank(similarity_matrix)

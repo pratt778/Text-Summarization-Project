@@ -2,23 +2,37 @@
 {% block title %}Home | Text Summarizer{% endblock title %}
 {% block content %}
 {% if history  %}
-<main class="d-flex justify-content-center align-items-center p-2">
+<div class="d-flex mt-3 justify-content-end p-2 align-items-center">
+
+    <div class="col-md-4">
+      <form class="search d-flex"method="get" action="{% url "searchquery" %}">
+        <input type="text" class="form-control" name="search" placeholder="Search your history here...">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+      
+    </div>
     
+  </div>
+<main class="d-flex justify-content-center align-items-center p-2">
     
     <table cellpadding="10"class="table table-primary table-striped">
         <tr>
+            <th>View</th>
             <th>Given Text</th>
             <th>Title</th>
             <th>Created</th>
-            <th>Action</th>
+            <th>Delete</th>
         </tr>
         {% for h in history %}
         <tr>
-            <td>{{h.generated_text | truncatechars:55}}</td>
-            <td>{{h.summary_title | truncatechars:55}}</td>
-            <td>{{h.created_at}}</td>
             <td>
-                <a href="{% url "summarydetail" h.id %}" ><button class="btn btn-success">View</button></a>
+              <a href="{% url "summarydetail" h.id %}" ><button class="btn btn-success">...</button></a>
+            </td>
+            <td>{{h.generated_text | truncatechars:35}}</td>
+            <td>{{h.summary_title | truncatechars:50}}</td>
+            <td>{{h.created_at|date}}</td>
+            <td>
+                
                 <a href="{% url "deletesummary" h.id %}" ><button class="btn btn-danger">Delete</button></a></td>
         </tr>
         {% endfor %}

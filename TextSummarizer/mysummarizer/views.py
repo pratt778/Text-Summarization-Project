@@ -19,6 +19,7 @@ summarizer = AdvancedTextRankSummarizer()
 def home(request):
     if request.method == "POST":
         summary_text = request.POST.get('summary')
+        summary_num=int(request.POST.get('rangeInput'))
         # reference_summary = request.POST.get('reference_summary')
 
         if not summary_text:
@@ -30,7 +31,7 @@ def home(request):
 
         try:
             text_length=len(summary_text.split())
-            title, summary, keywords = summarizer.summarize(summary_text, num_sentences=5, num_keywords=5)
+            title, summary, keywords = summarizer.summarize(summary_text, num_sentences=summary_num, num_keywords=5)
             
             context = {
                 'summary': summary,
@@ -38,6 +39,7 @@ def home(request):
                 'title': title,
                 'text': summary_text,
                 'length':text_length,
+                'summary_num':summary_num,
             }
 
             if request.user.is_authenticated:
@@ -125,3 +127,27 @@ def deletesummary(request,pk):
     else:
         return redirect("signin")
     return redirect("userhistory",summary.user.id)
+
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+def search_titles(query, titles):
+    vectorizer = TfidfVectorizer()
+    combined = [query] + titles
+    tfidf_matrix = vectorizer.fit_transform(combined)
+    cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+    related_indices = np.argsort(-cosine_similarities)
+    return [titles[i] for i in related_indices]
+
+
+def search(request):
+    query = request.GET.get('search')
+    summaries = UserHistory.objects.all()
+
+    titles = [summary.summary_title for summary in summaries]
+    results = search_titles(query, titles)
+    sorted_summaries = sorted(summaries, key=lambda x: results.index(x.summary_title))
+
+    return render(request, 'userhistory.html', {'history': sorted_summaries})
