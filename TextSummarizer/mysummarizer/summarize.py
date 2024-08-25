@@ -98,25 +98,14 @@ class AdvancedTextRankSummarizer:
         return sorted(word_scores.items(), key=lambda x: x[1], reverse=True)[:num_keywords]
 
     def generate_title(self, top_sentence, keywords, max_length=7):
-        # Tokenize the sentence
         words = word_tokenize(top_sentence.lower())
-        
-        # Lemmatize and filter out stop words and non-alphanumeric words
         important_words = [self.lemmatizer.lemmatize(word) for word in words 
                            if word not in self.stop_words and word.isalnum()]
         
-        # Combine important words with keywords
         title_words = important_words + [word for word, _ in keywords if word not in important_words]
-        
-       
         title_words = sorted(set(title_words), key=lambda x: words.index(x) if x in words else len(words))
-        
-       
         title = ' '.join(title_words[:max_length])
-        
-        
         title = title.title()
-        
         return title
 
     
@@ -126,7 +115,6 @@ class AdvancedTextRankSummarizer:
         scores = self.textrank(similarity_matrix)
         summary = self.extract_top_sentences(original_sentences, scores, num_sentences)
         keywords = self.keyword_extraction(cleaned_sentences, scores, num_keywords)
-        
         top_sentence = summary[0] if summary else ""
         title = self.generate_title(top_sentence, keywords)
         

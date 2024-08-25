@@ -4,11 +4,11 @@ from .views import *
 
 urlpatterns = [
     path('',home,name='home'),
-    path('signup/',Signup,name='signup'),
-    path('signin/',Signin,name='signin'),
-    path('signout/',Signout,name='signout'),
-    path('userhistory/<int:id>',Userhistory,name='userhistory'),
-    path('summarydetail/<int:pk>',summaryuser,name='summarydetail'),
-    path('deletesummary/<int:pk>',deletesummary,name='deletesummary'),
+    path('signup/',signup,name='signup'),
+    path('signin/',signin,name='signin'),
+    path('signout/',signout,name='signout'),
+    path('userhistory/<int:id>',user_history,name='userhistory'),
+    path('summarydetail/<int:pk>',summary_user,name='summarydetail'),
+    path('deletesummary/<int:pk>',delete_summary,name='deletesummary'),
     path('search',search,name="searchquery"),
 ]

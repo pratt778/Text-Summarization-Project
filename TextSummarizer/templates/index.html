@@ -8,6 +8,11 @@
        {{message}}
       </div>
     {% endif %}
+    {% if error %}
+    <div class="alert alert-primary" role="alert">
+        {{error}}
+       </div>
+    {% endif %}
     
     <div class="mt-3 d-flex w-25 justify-content-center gap-2">
         <button class="btn btn-warning" id="copytext">Copy</button>
@@ -76,18 +81,6 @@
         </div>
        
     </form>
-    
-       
-  
-    
-
-
-
-
-{% if rouge_scores %}
-    <h2>ROUGE Scores:</h2>
-    <pre>{{ rouge_scores }}</pre>
-{% endif %}
 </main>
 <script>
     const copytext=document.getElementById('copytext');
