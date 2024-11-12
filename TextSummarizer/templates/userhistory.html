@@ -2,8 +2,10 @@
 {% block title %}Home | Text Summarizer{% endblock title %}
 {% block content %}
 {% if history  %}
-<div class="d-flex mt-3 justify-content-end p-2 align-items-center">
-
+<div class="d-flex justify-content-end p-2 align-items-center mtf">
+<div class="m-3 w-100 d-flex justify-content-start">
+        <a href="{% url "home"%}"><button class="btn btn-warning">Goback</button></a>
+     </div>
     <div class="col-md-4">
       <form class="search d-flex"method="get" action="{% url "searchquery" %}">
         <input type="text" class="form-control" name="search" placeholder="Search your history here...">

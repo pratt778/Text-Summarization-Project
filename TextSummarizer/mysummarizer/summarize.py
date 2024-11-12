@@ -35,6 +35,9 @@ class AdvancedTextRankSummarizer:
         for word, count in tf_dict.items():
             tf_dict[word] = count / len(sentence)
         return tf_dict
+    
+    def findsentlen(self, sentence):
+        return len(sent_tokenize(sentence))
 
     def calculate_idf(self, cleaned_sentences):
         idf_dict = {}

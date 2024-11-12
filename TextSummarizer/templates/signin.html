@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Sign In | Text Summarizer{% endblock title %}
 {% block content %}
-<main class="p-3">
+<main class="p-3 mtf">
 
-    <form method="post">
+    <form method="post" class="customform">
         {% csrf_token %}
         {{form.as_p}}
         <button type='submit' class="btn btn-primary">Sign In</button>
-        <div>
-            {{form.errors}}
-        </div>
+        
     </form>
 </main>
 

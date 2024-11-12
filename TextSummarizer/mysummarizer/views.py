@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import FormView, View
 from .forms import UserForm, UserLogin
 from django.contrib import messages
+from urllib.parse import urlencode
 from django.contrib.auth import authenticate, login, logout
 from .summarize import AdvancedTextRankSummarizer
 from .models import UserHistory
@@ -13,19 +14,27 @@ import numpy as np
 # Initialize summarizer once globally to avoid reinitializing on each request
 summarizer = AdvancedTextRankSummarizer()
 
+def index(request):
+    return render(request,"homepage.html")
+
 def home(request):
     if request.method == "POST":
         summary_text = request.POST.get('summary')
         summary_num = int(request.POST.get('rangeInput', 0))
 
         if not summary_text:
-            return render(request, 'index.html', {'error': 'No text provided for summarization.'})
+            return render(request, 'summary.html', {'error': 'No text provided for summarization.'})
 
         text_length = len(summary_text.split())
+        sentence_count = summarizer.findsentlen(summary_text)
 
         if not request.user.is_authenticated and text_length > 350:
             message = f"The text is {text_length} words! Use text less than 350 words."
-            return render(request, 'index.html', {'message': message})
+            return render(request, 'summary.html', {'message': message})
+        
+        if sentence_count<3:
+            message=f"Input At least 3 sentences to get a proper summary"
+            return render(request,"summary.html",{'message':message})
 
         try:
             title, summary, keywords = summarizer.summarize(summary_text, num_sentences=summary_num, num_keywords=5)
@@ -36,6 +45,7 @@ def home(request):
                 'title': title,
                 'text': summary_text,
                 'length': text_length,
+                'sentcount':sentence_count,
                 'summary_num': summary_num,
             }
 
@@ -47,12 +57,12 @@ def home(request):
                     summary_title=title,
                     summary_keywords=", ".join(keywords)
                 )
-            return render(request, 'index.html', context)
+            return render(request, 'summary.html', context)
 
         except Exception as e:
-            return render(request, 'index.html', {'error': str(e)})
+            return render(request, 'summary.html', {'error': str(e)})
 
-    return render(request, 'index.html')
+    return render(request, 'summary.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -120,7 +130,8 @@ def search(request):
     if not query:
         return redirect('userhistory', request.user.id)
 
-    summaries = UserHistory.objects.all()
+    
+    summaries = UserHistory.objects.filter(user=request.user)
     titles = [summary.summary_title for summary in summaries]
 
     if titles:
@@ -128,3 +139,29 @@ def search(request):
         sorted_summaries = sorted(summaries, key=lambda x: results.index(x.summary_title))
         return render(request, 'userhistory.html', {'history': sorted_summaries[:5],'highlight':True})
     return render(request, 'userhistory.html', {'history': summaries})
+
+def payments(request):
+    esewa_url = "https://esewa.com.np/epay/main"
+    
+    # Replace with correct values:
+    params = {
+        'amt': '100',  # Example amount (check if this is correct)
+        'pdc': '0',
+        'psc': '0',
+        'txAmt': '0',
+        'tAmt': '100',  # Ensure the total amount is correct
+        'pid': 'your_unique_product_id',  # Unique product ID (replace with actual dynamic value)
+        'scd': 'your_merchant_code',  # Replace with your real merchant code
+        'su': 'http://yourdomain.com/esewa_success',  # Success URL (should be a real URL)
+        'fu': 'http://yourdomain.com/esewa_failure'   # Failure URL (should be a real URL)
+    }
+    
+    # Encode the parameters properly
+    query_string = urlencode(params)
+    
+    # Debug: Print the final redirect URL
+    print(f"Redirecting to: {esewa_url}?{query_string}")
+    
+    # Redirect to eSewa
+    return redirect(f"{esewa_url}?{query_string}")
+

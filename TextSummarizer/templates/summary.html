@@ -37,9 +37,12 @@
                     <textarea rows="12" style="resize: none;" class="border-0" cols="53" id="texta" name="summary" placeholder="Enter or Paste your text here">{% if text %}{{text}}{% endif %}</textarea>
                     
                     {% if length %}
-                    <div class="d-flex w-100  align-items-center">
+                    <div class="d-flex w-100 gap-3  align-items-center">
                         <div class="fw-bold">
                             {{length}} words
+                        </div>
+                        <div class="fw-bold">
+                            {{sentcount}} sentences
                         </div>
                     </div>
                    
