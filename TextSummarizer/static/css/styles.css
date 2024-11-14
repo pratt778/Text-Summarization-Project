@@ -95,6 +95,9 @@
   color: red;
   list-style: none;
 }
+.premium-cont{
+  background-color: rgba(255, 166, 0, 0.935);
+}
 html{
   width: 100vw;
   height: 100vh;

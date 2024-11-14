@@ -41,7 +41,7 @@
     </table>
 </main>
     {% else %}
-    <h2 class="mt-5" align="center">{{request.user | capfirst}}'s history is Empty</h2>
+    <h2 class="mtf" align="center">{{request.user | capfirst}}'s history is Empty</h2>
     <a href="{% url "home" %}" class="w-100 nav-link d-flex justify-content-center"><button class="btn btn-success">Summarize Text here</button></a>
 {% endif %}
 {% endblock content %}

@@ -140,28 +140,5 @@ def search(request):
         return render(request, 'userhistory.html', {'history': sorted_summaries[:5],'highlight':True})
     return render(request, 'userhistory.html', {'history': summaries})
 
-def payments(request):
-    esewa_url = "https://esewa.com.np/epay/main"
-    
-    # Replace with correct values:
-    params = {
-        'amt': '100',  # Example amount (check if this is correct)
-        'pdc': '0',
-        'psc': '0',
-        'txAmt': '0',
-        'tAmt': '100',  # Ensure the total amount is correct
-        'pid': 'your_unique_product_id',  # Unique product ID (replace with actual dynamic value)
-        'scd': 'your_merchant_code',  # Replace with your real merchant code
-        'su': 'http://yourdomain.com/esewa_success',  # Success URL (should be a real URL)
-        'fu': 'http://yourdomain.com/esewa_failure'   # Failure URL (should be a real URL)
-    }
-    
-    # Encode the parameters properly
-    query_string = urlencode(params)
-    
-    # Debug: Print the final redirect URL
-    print(f"Redirecting to: {esewa_url}?{query_string}")
-    
-    # Redirect to eSewa
-    return redirect(f"{esewa_url}?{query_string}")
+
 

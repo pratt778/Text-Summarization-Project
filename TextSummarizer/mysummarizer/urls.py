@@ -12,5 +12,4 @@ urlpatterns = [
     path('summarydetail/<int:pk>',summary_user,name='summarydetail'),
     path('deletesummary/<int:pk>',delete_summary,name='deletesummary'),
     path('search',search,name="searchquery"),
-    path('payments/',payments,name="payments"),
 ]

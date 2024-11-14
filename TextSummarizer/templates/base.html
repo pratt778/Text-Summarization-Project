@@ -30,13 +30,13 @@
     <!-- Container wrapper -->
     <div class="container">
       <!-- Navbar brand -->
-      <a class="navbar-brand me-2" href="">
+      <a class="navbar-brand me-2" href="{% url "index" %}">
         <img
-          src="home/pratham778/Downloads/logo.png"
+          src="{% static "images/logo.png" %}"
           height="16"
           alt="Summarize_logo"
           loading="lazy"
-          style="margin-top: -1px;"
+          style="margin-top: -1px; width:130px; height:auto;"
         />
       </a>
   
@@ -58,7 +58,7 @@
         <!-- Left links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url "index" %}">MeroTextSummarizer</a>
+            <a class="nav-dark" href="{% url "index" %}">MeroTextSummarizer</a>
           </li>
         </ul>
         
@@ -99,4 +99,41 @@
   {% block content %}{% endblock content %}
     
 </body>
+<script>
+  function payWithKhalti(amount) {
+    var config = {
+        // Replace with your actual Khalti public key
+        "publicKey": "your_khalti_public_key",  
+        
+        "productIdentity": "premium_subscription",
+        "productName": "Premium Subscription",
+        "productUrl": "http://yourdomain.com/product",
+        
+        // Set the amount passed to this function
+        "paymentPreference": ["KHALTI"],
+        
+        "eventHandler": {
+            onSuccess(payload) {
+                // Handle successful payment (e.g., send payload to the server)
+                console.log("Payment successful", payload);
+                // You can send the payload to your backend for further processing here
+            },
+            onError(error) {
+                // Handle payment error
+                console.error("Payment failed", error);
+            },
+            onClose() {
+                console.log("Khalti widget closed");
+            }
+        }
+    };
+    
+    // Initialize Khalti checkout with the configured settings
+    var checkout = new KhaltiCheckout(config);
+    
+    // Show the checkout modal with the specified amount
+    checkout.show({ amount: amount });
+}
+
+</script>
 </html>

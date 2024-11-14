@@ -10,9 +10,9 @@
           <h1 class="mb-5">
             Turning <span class="text-danger">complexity</span> into <span class="text-primary">clarity</span>, one <span class="text-success">summary</span> at a time
           </h1>
-          <button class="btn btn-success">
-            <a href="{% url "home" %}">Start Summarizing</a>
-          </button>
+          
+            <a href="{% url "home" %}"><button class="btn btn-success">Start Summarizing</button></a>
+          
         </div>
       </div>
     </div>
@@ -58,47 +58,58 @@
     </div>
   </div>
 </section>
-<section class="features-icons bg-dark text-center">
+<section class="features-icons premium-cont text-center">
   <div class="container">
     <div class="row">
       <div class="col-lg-4">
-        <div class="features-icons-item rounded shadow-lg bg-secondary mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
+        <div class="features-icons-item rounded shadow-lg bg-dark mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
           <div class="features-icons-icon d-flex">
-            <i class="bi-currency-dollar m-auto text-warning"></i>
+            <i class="bi-currency-dollar m-auto text-warning">2.99</i>
           </div>
           <h3 class="text-white">Premium <span class="text-warning">Light</span></h3>
           <p class="lead mb-0 text-white">
             <li style="list-style: none; font-size: 18px; color: white;">- Input Words more than 700</li>
+            <li style="list-style: none; font-size: 18px; color: white;">-Ads will Popup</li>
           </p>
-          <button class="btn bg-warning text-white"><a href="{% url "payments" %}">$2.99/-</a></button>
+         
+          <button class="btn btn-warning" id="premium1"
+          onclick=payWithKhalti(30000)
+          >Pay via Khalti</button>
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="features-icons-item rounded shadow-lg bg-secondary mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
+        <div class="features-icons-item rounded shadow-lg bg-dark mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
           <div class="features-icons-icon d-flex">
-            <i class="bi-currency-dollar m-auto text-info"></i>
+            <i class="bi-currency-dollar m-auto text-info">5.99</i>
           </div>
           <h3 class="text-white">Premium <span class="text-info">Core</span></h3>
           <p class="lead mb-0 text-white">
             <li style="list-style: none; font-size: 18px; color: white;">- Input Words more than 1100</li>
+            <li style="list-style: none; font-size: 18px; color: white;">- Few Ads Popup</li>
           </p>
-          <button class="btn bg-info text-white">$5.99/-</button>
+         
+          <button class="btn btn-info" id="premium2"
+          onclick=payWithKhalti(60000)
+          >Pay via Khalti</button>
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="features-icons-item rounded shadow-lg bg-secondary mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
+        <div class="features-icons-item rounded shadow-lg bg-dark mx-auto mb-5 mb-lg-0 mb-lg-3 p-3">
           <div class="features-icons-icon d-flex">
-            <i class="bi-currency-dollar m-auto text-danger"></i>
+            <i class="bi-currency-dollar m-auto text-danger">8.99</i>
           </div>
           <h3 class="text-white">Premium <span class="text-danger">Dark</span></h3>
           <p class="lead mb-0 text-white">
             <li style="list-style: none; font-size: 18px; color: white;">- Input Words more than 1500</li>
+            <li style="list-style: none; font-size: 18px; color: white;">- No Ads Popup</li>
           </p>
-          <button class="btn bg-danger text-white">$8.99/-</button>
+        
+          <button class="btn btn-danger" id="premium3" onclick=payWithKhalti(90000)>Pay via Khalti</button>
         </div>
       </div>
     </div>
   </div>
 </section>
+<script src="https://khalti.com/static/khalti-checkout.js"></script>
 
 {% endblock content %}
